@@ -370,6 +370,8 @@ textarea:focus{outline:none;border-color:var(--gold)}
 /* His WhatsApp number with country code, digits only (e.g. "919876543210").
    Leave empty and WhatsApp will let her pick the chat. */
 const HIS_WHATSAPP = "";
+/* Her invitation answer is also pushed to his phone through ntfy.sh (subscribe to this topic in the ntfy app). */
+const NTFY_TOPIC = "diwali-02995994133c39985a8376f3";
 
 const buzz = ms => { try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {} };
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -534,6 +536,7 @@ send.addEventListener('click', () => {
   if (chipVal) msg += `\n${chipVal}`;
   msg += '\n\nHappy Diwali 🪔✨';
   document.getElementById('wa').href = `https://wa.me/${HIS_WHATSAPP}?text=${encodeURIComponent(msg)}`;
+  fetch('https://ntfy.sh/' + NTFY_TOPIC, {method:'POST', body: msg, keepalive: true, headers: {Title: 'She answered your Diwali invite', Tags: 'diya,heart'}}).catch(() => {});
   step('s-done'); buzz([30,50,30,50,80]); sparkBurst(60);
 });
 
