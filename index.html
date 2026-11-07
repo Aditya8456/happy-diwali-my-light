@@ -343,31 +343,6 @@ textarea:focus{outline:none;border-color:var(--gold)}
           <p>Even on the days we don't talk, you're the warmest thought I have. I hope this year treats you as gently as you deserve, and gives you every single thing you wished for on that lantern.</p>
           <p class="sign">always yours, in the dark and in the light 🖤🪔</p>
         </div>
-        <button class="btn" id="toWrite">write something back? 💌</button>
-        <p class="no-pressure">only if you feel like it — no pressure, ever.</p>
-      </div>
-    </div>
-    <div class="step" id="s-write">
-      <span class="kicker">this little space is yours</span>
-      <h2>Anything on your heart?</h2>
-      <p class="sub">Big, small, silly, or just a hi — whatever you want to tell me, today or any day. It flies straight to me, and I'll keep it safe.</p>
-      <textarea id="noteTxt" placeholder="dear you…"></textarea>
-      <div class="chips">
-        <button class="chip" data-v="This made me smile 🥰">🥰 this made me smile</button>
-        <button class="chip" data-v="I miss you 💛">💛 I miss you</button>
-        <button class="chip" data-v="Happy Diwali to you too 🪔">🪔 happy Diwali to you too</button>
-      </div>
-      <button class="btn" id="send" disabled>Send it to him 💌</button>
-    </div>
-    <div class="step" id="s-done">
-      <div class="diya lit" data-diya style="width:130px;margin:0 auto"></div>
-      <span class="kicker">✨ delivered ✨</span>
-      <h2>Got it. Every word.</h2>
-      <p class="sub">Your little note is on its way to him — sealed and lit with a diya.</p>
-      <div class="answer" id="answer"></div>
-      <div class="love">Thank you for this.<br>Of all the lights tonight, your words are the ones I'll keep.<br>Happy Diwali, my light. 🖤🪔</div>
-      <div class="actions">
-        <a class="btn wa" id="wa" target="_blank" rel="noopener">Tell him on WhatsApp 💬</a>
         <button class="btn ghost" id="backLights">back to the lights ✨</button>
       </div>
     </div>
@@ -375,12 +350,6 @@ textarea:focus{outline:none;border-color:var(--gold)}
 </div>
 
 <script>
-/* His WhatsApp number with country code, digits only (e.g. "919876543210").
-   Leave empty and WhatsApp will let her pick the chat. */
-const HIS_WHATSAPP = "";
-/* Her invitation answer is also pushed to his phone through ntfy.sh (subscribe to this topic in the ntfy app). */
-const NTFY_TOPIC = "diwali-02995994133c39985a8376f3";
-
 const buzz = ms => { try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {} };
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const rand = (a, b) => a + Math.random()*(b - a);
@@ -484,28 +453,6 @@ document.getElementById('inboxBtn').addEventListener('click', openInvite);
 document.getElementById('ctaBtn').addEventListener('click', openInvite);
 document.getElementById('closeInv').addEventListener('click', closeInvite);
 document.getElementById('backLights').addEventListener('click', closeInvite);
-function step(id){ inv.querySelectorAll('.step').forEach(s => s.classList.toggle('on', s.id === id)); inv.scrollTop = 0; }
-
-document.getElementById('toWrite').addEventListener('click', () => { buzz(15); step('s-write'); });
-
-const noteTxt = document.getElementById('noteTxt'), send = document.getElementById('send');
-function refresh(){ send.disabled = !noteTxt.value.trim(); }
-noteTxt.addEventListener('input', refresh);
-// quick chips just drop a line into the note, she can keep typing after
-inv.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
-  const v = c.dataset.v, cur = noteTxt.value.trim();
-  if (!cur.includes(v)) noteTxt.value = cur ? cur + '\n' + v : v;
-  c.classList.add('on'); buzz(10); refresh();
-}));
-const esc = s => s.replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-send.addEventListener('click', () => {
-  const note = noteTxt.value.trim();
-  document.getElementById('answer').innerHTML = esc(note).replace(/\n/g, '<br>');
-  const msg = `🪔 A little note from her\n\n${note}`;
-  document.getElementById('wa').href = `https://wa.me/${HIS_WHATSAPP}?text=${encodeURIComponent(msg)}`;
-  fetch('https://ntfy.sh/' + NTFY_TOPIC, {method:'POST', body: msg, keepalive: true, headers: {Title: 'She left you a note', Tags: 'diya,heart'}}).catch(() => {});
-  step('s-done'); buzz([30,50,30,50,80]); sparkBurst(60);
-});
 
 /* ---------- game 1: diyas ---------- */
 (function(){
